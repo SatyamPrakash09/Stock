@@ -7,16 +7,7 @@ interface AIButtonProps {
 
 export default function AIButton({ onClick, isListening }: AIButtonProps) {
   return (
-    <button
-      onClick={onClick}
-      className={`w-24 h-24 rounded-full bg-[#BDB1A1] hover:bg-[#C0A062] flex items-center justify-center shadow-2xl transition-all duration-300 ${
-        isListening ? 'scale-110' : 'hover:scale-110'
-      }`}
-      style={{
-        animation: isListening ? 'none' : 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }}
-    >
-      <Mic className={`w-12 h-12 text-[#1A202C] ${isListening ? 'animate-pulse' : ''}`} />
+    <>
       <style>{`
         @keyframes pulse {
           0%, 100% {
@@ -27,6 +18,21 @@ export default function AIButton({ onClick, isListening }: AIButtonProps) {
           }
         }
       `}</style>
-    </button>
+
+      <button
+        onClick={() => {
+          console.log("🟢 Button CLICKED");  // Debug line
+          onClick();
+        }}
+        className={`w-24 h-24 rounded-full bg-[#BDB1A1] hover:bg-[#C0A062] flex items-center justify-center shadow-2xl transition-all duration-300 ${
+          isListening ? 'scale-110' : 'hover:scale-110'
+        }`}
+        style={{
+          animation: isListening ? 'none' : 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        }}
+      >
+        <Mic className={`w-12 h-12 text-[#1A202C] ${isListening ? 'animate-pulse' : ''}`} />
+      </button>
+    </>
   );
 }

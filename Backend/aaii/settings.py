@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stockkk',
     'corsheaders',
-    'rest_framework'
+    'rest_framework',
+    # 'channels'
 ]
 
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -126,7 +129,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 APPEND_SLASH = False

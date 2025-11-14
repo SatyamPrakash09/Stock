@@ -16,5 +16,8 @@ urlpatterns = [
     re_path(r'^$', views.getAllDetails, name='getting'),
     re_path(r'^addItem/?$', views.addItem, name='addd'),
     re_path(r'^checkItem/(?P<name>[^/]+)/?$', views.checkItem, name='checkItem'),
-    re_path(r'^updateItem/(?P<name>[^/]+)/?$', views.updateItem, name='updateItem')
+    re_path(r'^listLessIt/?$', views.listStockLess, name='stockless'),
+    re_path(r'^updateItem/(?P<name>[^/]+)/?$', views.updateItem, name='updateItem'),
+    re_path(r'^webhook/?$', views.webhook, name='webhook'),
+    re_path(r'^join/?$', views.join_agora, name='join')
 ]

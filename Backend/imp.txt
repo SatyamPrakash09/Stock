@@ -1,0 +1,147 @@
+ok ✅
+I’ll give you a complete minimal “AIVoice → Django → return response to user” setup
+
+**very simple version**
+(1 webhook, 1 intent, one channel)
+
+---
+
+## 1) BACKEND (Django)
+
+### urls.py
+
+```python
+from django.urls import re_path
+from . import views
+
+urlpatterns = [
+    re_path(r'^webhook/?$', views.webhook, name='webhook'),
+    re_path(r'^join/?$', views.join_agora, name='join'),
+]
+```
+
+---
+
+### views.py
+
+```python
+import json
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+# ---- CALL AGORA /JOIN ----
+def join_agora(request):
+
+    url = "https://api.agora.io/api/conversational-ai-agent/v2/projects/<YOUR-PROJECT-ID>/join"
+
+    headers = {
+        "Authorization": "Basic <base64 appid:appcertificate here>",
+        "Content-Type": "application/json",
+    }
+
+    data = {
+        "name": "unique_user_name",
+        "properties": {
+            "channel": "mychannel",
+            "advanced_features": {"enable_aivad": True},
+
+            # THIS IS IMPORTANT: webhook
+            "webhook": {
+                "url": "https://your-domain.com/webhook",   # <- YOUR django webhook endpoint
+                "secret": "abc123"
+            },
+
+            "llm": {
+                "url": "https://api.openai.com/v1/chat/completions",
+                "api_key": "<openai key>",
+                "system_messages": [{"role": "system", "content": "you assist with groceries"}],
+                "params": {"model": "gpt-4o-mini"},
+            }
+        }
+    }
+
+    r = requests.post(url, headers=headers, data=json.dumps(data))
+    return JsonResponse(r.json())
+```
+
+---
+
+### webhook in Django
+
+```python
+@csrf_exempt
+def webhook(request):
+    body = json.loads(request.body)
+    text = body.get("text", "").lower()
+
+    print("HE SAID:", text)
+
+    # simple intent logic
+    if "add item" in text:
+        # your db logic here...
+        return JsonResponse({"reply":"item added!"})
+
+    # default
+    return JsonResponse({"reply":"ok"})
+```
+
+**DONE for backend** ✅
+
+---
+
+## 2) FRONTEND
+
+Put this inside your HTML or React.
+
+```html
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
+<button onclick="startVoice()">Start Voice</button>
+
+<script>
+async function startVoice() {
+
+  // 1) call Django join API to get channel + token
+  const res = await fetch("https://your-domain.com/join");
+  const data = await res.json();
+
+  const appId = data.app_id;     // returned from agora
+  const channel = data.channel;
+  const token = data.token;
+
+  // 2) join Agora voice channel and publish mic
+  const client = AgoraRTC.createClient({mode:"live", codec:"vp8"});
+  await client.join(appId, channel, token, null);
+
+  const mic = await AgoraRTC.createMicrophoneAudioTrack();
+  await client.publish([mic]);
+
+  console.log("Mic streaming → Agora agent listening");
+}
+</script>
+```
+
+click “Start Voice” → talk → Agora hears → converts speech → calls Django webhook → Django responds.
+
+---
+
+## Flow visual
+
+```
+User mic → Agora → Django webhook → reply → spoken back by agora to user
+```
+
+---
+
+## IMPORTANT
+
+* Your webhook URL must be PUBLIC HTTPS
+* Join must be created **before** voice streaming
+
+---
+
+If you want — next I can write:
+
+* how to return dynamic JSON from webhook that actually speaks back
+* how to handle multiple intents (“add item”, “check item” etc.)
