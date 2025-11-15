@@ -6,17 +6,19 @@ export default function AIControl() {
     const [isListening, setIsListening] = useState(false);
 
     const handleClick = async () => {
+        console.log("Button clicked, isListening:", isListening);
         if (!isListening) {
-            await startAssistant();   // Start first
-            setIsListening(true);     // THEN update UI
+            await startAssistant();
+            setIsListening(true);
         } else {
-            await stopAssistant();    // Stop first
-            setIsListening(false);    // THEN update UI
+            await stopAssistant();
+            setIsListening(false);
         }
     };
 
+
     return (
-        <AIButton 
+        <AIButton
             onClick={handleClick}
             isListening={isListening}
         />

@@ -98,8 +98,8 @@ export async function startAssistant() {
             throw new Error(`Invalid App ID format. Expected 32 hex characters, got: ${data.app_id}`);
         }
 
-        client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-        client.setClientRole("host");
+        client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+        // client.setClientRole("host");
 
         // Type-safe event listener
         client.on("user-published", async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
@@ -155,13 +155,20 @@ export async function startAssistant() {
 }
 
 export async function stopAssistant() {
-    if (micTrack) {
-        micTrack.stop();
-        micTrack.close();
-        micTrack = null;
+    try {
+        if (micTrack) {
+            micTrack.stop();
+            micTrack.close();
+            micTrack = null;
+        }
+        if (client) {
+            client.removeAllListeners();
+            await client.leave();
+            client = null;
+        }
+        console.log("🛑 Stopped Listening");
+    } catch (err) {
+        console.error("Error in stopAssistant:", err);
     }
-    if (client) {
-        await client.leave();
-    }
-    console.log("🛑 Stopped Listening");
 }
+

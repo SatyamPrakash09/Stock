@@ -31,7 +31,7 @@ export default function AIButton({ onClick, isListening }: AIButtonProps) {
           animation: isListening ? 'none' : 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         }}
       >
-        <Mic className={`w-12 h-12 text-[#1A202C] ${isListening ? 'animate-pulse' : ''}`} />
+        <Mic className={`w-12 h-12 text-[#1A202C] ${isListening ? "Stop Listening" : "Start Listening"}`} />
       </button>
     </>
   );
