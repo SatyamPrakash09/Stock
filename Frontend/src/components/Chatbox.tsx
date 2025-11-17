@@ -128,8 +128,8 @@ NO explanation, NO extra text. JSON ONLY.
 
     if (action.action === "addItem") {
       const body = {
-        name: intent.item,
-        stock: intent.qty || 1,
+        name: intent.intent.item,
+        stock: intent.intent.qty || 1,
         expiry_date: "2026-01-01"
       };
 
@@ -139,7 +139,7 @@ NO explanation, NO extra text. JSON ONLY.
         body: JSON.stringify(body)
       });
 
-      return `${intent.item} added successfully! 🎉`;
+      return `${intent.intent.item} added successfully! 🎉`;
     }
 
     if (action.action === "updateItem") {
