@@ -213,6 +213,7 @@ def checkItem(request, name):
 def updateItem(request, name):
     try:
         snippet = Items.objects.get(name=name)
+        print(snippet)
     except Items.DoesNotExist:
         return Response(status=404)
     

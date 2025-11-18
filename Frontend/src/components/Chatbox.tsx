@@ -144,12 +144,13 @@ NO explanation, NO extra text. JSON ONLY.
 
     if (action.action === "updateItem") {
       const body = {
-        name: intent.item,
-        stock: intent.qty || 1
+        name: intent.intent.item,
+        stock: intent.intent.qty || 1,
+        expiry_date: "2026-01-01"
       };
 
-      const res = await fetch(BASE_URL + "/updateItem/" + intent.item, {
-        method: "POST",
+      const res = await fetch(BASE_URL + "/updateItem/" + intent.intent.item, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
